@@ -1,0 +1,10 @@
+[tool]
+[tool.poetry]
+description = "FCC DA Medical Data Visualizer Project"
+authors = ["Jeremy A Gray <jeremy.a.gray@gmail.com>"]
+name = "fcc-da-medical-visualizer"
+version = "0.0.1"
+[tool.poetry.dependencies]
+pandas = "*"
+python = "^3.8"
+seaborn = "*"
