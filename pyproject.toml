@@ -8,3 +8,7 @@ version = "0.0.1"
 pandas = "*"
 python = "^3.8"
 seaborn = "*"
+[tool.poetry.dev-dependencies]
+pytest = "*"
+pytest-flakes = "*"
+pytest-flake8 = "*"
