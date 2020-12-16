@@ -1,21 +1,21 @@
 #!/usr/bin/env python
 
-import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import seaborn as sns
 
 # Import data.
-df = pd.read_csv('medical_examination.csv')
+df = pd.read_csv("medical_examination.csv")
 
 # Add 'bmi' and 'overweight' column.
-df['bmi'] = df['weight'] / ((df['height'] / 100.0)**2)
-df['overweight'] = df['bmi'].apply(lambda item: 1 if item > 25 else 0)
+df["bmi"] = df["weight"] / ((df["height"] / 100.0) ** 2)
+df["overweight"] = df["bmi"].apply(lambda item: 1 if item > 25 else 0)
 
 # Massage all good values to 0, and all bad to 1.
 # See README.md for further details.
-df['gluc'] = df['gluc'].apply(lambda item: 0 if item == 1 else 1)
-df['cholesterol'] = df['cholesterol'].apply(lambda item: 0 if item == 1 else 1)
+df["gluc"] = df["gluc"].apply(lambda item: 0 if item == 1 else 1)
+df["cholesterol"] = df["cholesterol"].apply(lambda item: 0 if item == 1 else 1)
 
 
 # Draw categorical plot.
@@ -32,8 +32,7 @@ def draw_cat_plot():
 
     # Select the data for the bar chart.  See examples/Figure_1.png
     # for the categories.
-    df1 = df[['cholesterol', 'gluc', 'smoke', 'alco',
-              'active', 'overweight', 'cardio']]
+    df1 = df[["cholesterol", "gluc", "smoke", "alco", "active", "overweight", "cardio"]]
 
     # pd.melt() takes an ID variable.  Use 'cardio' since we intend to
     # group by it later.  This rearranges our table from rows
@@ -41,7 +40,7 @@ def draw_cat_plot():
     # columns of cardio, variable (categories), and value.  This
     # already looks easier to convert to frequency data for a bar
     # chart.
-    df1 = df1.melt(id_vars=['cardio'])
+    df1 = df1.melt(id_vars=["cardio"])
 
     # Since the bar charts are split by the separate 'cardio' values
     # and show the counts of each value for each category, we need to
@@ -50,13 +49,13 @@ def draw_cat_plot():
     # the y axis of the bar chart.
 
     # Generate the groupby object to split by cardio value.
-    df1 = df1.groupby(['cardio', 'variable', 'value'])
+    df1 = df1.groupby(["cardio", "variable", "value"])
 
     # Compute the frequency of each category.
     df1 = df1.size()
 
     # Reset the index and name it 'total.'
-    df1 = df1.reset_index(name='total')
+    df1 = df1.reset_index(name="total")
 
     # If you print the data now, it will look very much like frequency
     # data for a bar chart.
@@ -65,15 +64,12 @@ def draw_cat_plot():
     # work, test_module.py needs access to the axes, which is accessed
     # by via sns.catplot().fig.  The parameters are fairly
     # self-explanatory.
-    graph = sns.catplot(data=df1,
-                        kind="bar",
-                        x="variable",
-                        y="total",
-                        hue="value",
-                        col='cardio')
+    graph = sns.catplot(
+        data=df1, kind="bar", x="variable", y="total", hue="value", col="cardio"
+    )
     fig = graph.fig
 
-    fig.savefig('catplot.png')
+    fig.savefig("catplot.png")
     return fig
 
 
@@ -86,23 +82,25 @@ def draw_heat_map():
     # Clean the data.
     # Select the data for the heat map.  See examples/Figure_2.png for
     # the categories.
-    df2 = df.loc[:,
-                 [
-                     'id',
-                     'age',
-                     'gender',
-                     'height',
-                     'weight',
-                     'ap_hi',
-                     'ap_lo',
-                     'cholesterol',
-                     'gluc',
-                     'smoke',
-                     'alco',
-                     'active',
-                     'cardio',
-                     'overweight',
-                 ]]
+    df2 = df.loc[
+        :,
+        [
+            "id",
+            "age",
+            "gender",
+            "height",
+            "weight",
+            "ap_hi",
+            "ap_lo",
+            "cholesterol",
+            "gluc",
+            "smoke",
+            "alco",
+            "active",
+            "cardio",
+            "overweight",
+        ],
+    ]
 
     # Remove the outliers according to README.md.  Keep the data with
     # diastolic pressure lower than systolic (probably should be < and
@@ -118,11 +116,11 @@ def draw_heat_map():
     # df['weight'] <= df['weight'].quantile(0.975)
 
     df2 = df2.loc[
-        (df['ap_lo'] < df['ap_hi'])
-        & (df['height'] >= df['height'].quantile(0.025))
-        & (df['height'] <= df['height'].quantile(0.975))
-        & (df['weight'] >= df['weight'].quantile(0.025))
-        & (df['weight'] <= df['weight'].quantile(0.975))
+        (df["ap_lo"] < df["ap_hi"])
+        & (df["height"] >= df["height"].quantile(0.025))
+        & (df["height"] <= df["height"].quantile(0.975))
+        & (df["weight"] >= df["weight"].quantile(0.025))
+        & (df["weight"] <= df["weight"].quantile(0.975))
     ]
 
     # Calculate the correlation matrix.  This calculates a
@@ -143,12 +141,8 @@ def draw_heat_map():
     # Draw the heatmap with sns.heatmap(), and store in ax for
     # testing.  'annot' generates labels, and '.1f' sets the number
     # format for the labels.
-    ax = sns.heatmap(data=corr,
-                     mask=mask,
-                     square=True,
-                     annot=True,
-                     fmt='.1f')
+    ax = sns.heatmap(data=corr, mask=mask, square=True, annot=True, fmt=".1f")
     ax.has_data()
 
-    fig.savefig('heatmap.png')
+    fig.savefig("heatmap.png")
     return fig

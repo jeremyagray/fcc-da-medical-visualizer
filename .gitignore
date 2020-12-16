@@ -2,7 +2,9 @@
 *~
 
 # Python.
+.coverage
 __pycache__
+htmlcov
 
 # Generated files.
 *.png
